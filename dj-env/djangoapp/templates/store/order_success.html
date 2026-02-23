@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="success-container">
+    <div class="success-card">
+        <div class="success-icon">✔</div>
+        <h1>Order Confirmed!</h1>
+        <p>Thanks for stepping up, <strong>{{ order.full_name }}</strong>.</p>
+        <p class="order-id">Order ID: #{{ order.id }}</p>
+        
+        <div class="order-summary-box">
+            <p>We've sent a confirmation to: <span>{{ order.email }}</span></p>
+            <p>Total Paid: <strong>${{ order.total_paid }}</strong></p>
+        </div>
+
+        <div class="success-actions" style="display: flex; gap: 20px; justify-content: center;">
+            <a href="{% url 'product_list' %}" class="view-btn">Back to Shop</a>
+            
+            <a href="{% url 'download_receipt' order.id %}" class="admin-link">Download Receipt (PDF)</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

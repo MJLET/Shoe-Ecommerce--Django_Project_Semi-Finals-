@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="detail-container">
+    <div class="detail-grid">
+        <div class="main-image-card">
+            <img src="{{ product.variants.first.image.url }}" id="main-shoe-image" alt="{{ product.name }}">
+        </div>
+
+        <div class="product-info-section">
+            <p class="brand-name">{{ product.brand.name }}</p>
+            <h1 class="product-name">{{ product.name }}</h1>
+            <p class="price-tag">${{ product.base_price }}</p>
+            
+            <p class="description">{{ product.description }}</p>
+
+            <div class="variant-selector">
+                <h3>Select Color: <span id="color-name-display">{{ product.variants.first.color_name }}</span></h3>
+                <div class="swatch-group">
+                    {% for variant in product.variants.all %}
+                    <div class="swatch-item {% if forloop.first %}active{% endif %}" 
+                         style="background-color: {{ variant.color_code }};"
+                         data-image="{{ variant.image.url }}"
+                         data-name="{{ variant.color_name }}"
+                         onclick="changeColor(this)">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <form action="{% url 'add_to_cart' product.variants.first.id %}" method="POST" id="add-to-cart-form">
+                {% csrf_token %}
+                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function changeColor(element) {
+    // 1. Get data from the clicked swatch
+    const newImage = element.getAttribute('data-image');
+    const newName = element.getAttribute('data-name');
+    
+    // 2. Update the main shoe image with a smooth fade
+    const mainImg = document.getElementById('main-shoe-image');
+    mainImg.style.opacity = '0';
+    
+    setTimeout(() => {
+        mainImg.src = newImage;
+        mainImg.style.opacity = '1';
+    }, 200);
+    
+    // 3. Update the text display
+    document.getElementById('color-name-display').innerText = newName;
+    
+    // 4. Update which circle looks "selected"
+    document.querySelectorAll('.swatch-item').forEach(s => s.classList.remove('active'));
+    element.classList.add('active');
+}
+</script>
+{% endblock %}

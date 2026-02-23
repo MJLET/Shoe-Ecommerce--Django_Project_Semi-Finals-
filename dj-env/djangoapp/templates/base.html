@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StepUp Shoes{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'product_list' %}" class="logo">STEP<span>UP</span></a>
+            <ul class="nav-links">
+                <li><a href="{% url 'product_list' %}">Shop</a></li>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="/admin/" class="admin-link">Admin Dashboard</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'cart_detail' %}">Cart</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <main class="content">{% block content %}{% endblock %}</main>
+    <footer class="footer"><p>&copy; 2026 StepUp Shoes. All Rights Reserved.</p></footer>
+</body>
+</html>

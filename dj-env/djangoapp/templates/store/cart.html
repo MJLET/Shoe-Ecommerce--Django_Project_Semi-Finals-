@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="cart-container" style="max-width: 1100px; margin: 50px auto; padding: 0 20px;">
+    <h1>Your Shopping Cart</h1>
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th><th>Color</th><th>Quantity</th><th>Price</th><th>Subtotal</th><th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v_id, item in cart.items %}
+            <tr>
+                <td class="product-cell">
+                    <img src="{{ item.image }}" class="cart-img" alt="Product">
+                    <span>{{ item.name }}</span>
+                </td>
+                <td>{{ item.color }}</td>
+                <td>
+                    <a href="{% url 'update_cart' v_id 'decrease' %}" style="text-decoration:none; color:black; background:#eee; padding:5px 10px; border-radius:5px;">-</a>
+                    <span style="margin: 0 10px;">{{ item.quantity }}</span>
+                    <a href="{% url 'update_cart' v_id 'increase' %}" style="text-decoration:none; color:black; background:#eee; padding:5px 10px; border-radius:5px;">+</a>
+                </td>
+                <td>${{ item.price }}</td>
+                <td>${{ item.quantity }} x {{ item.price }}</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' v_id %}" style="color:#ff4757; font-weight:800; text-decoration:none;">✕</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: right; margin-top: 30px;">
+        <h2>Total: ${{ total_price }}</h2>
+        <a href="{% url 'checkout' %}" class="admin-link" style="display: inline-block; margin-top: 20px;">Proceed to Checkout</a>
+    </div>
+</div>
+{% endblock %}
