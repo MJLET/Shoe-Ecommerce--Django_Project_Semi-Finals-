@@ -10,7 +10,7 @@
 }
 
 /* Align name next to shoe picture */
-.product-cell { display: flex; align-items: center; text-align: left !important; gap: 20px; }
+.product-cell { display: flex; align-items: center; text-align: center !important; gap: 20px; }
 
 /* Giant Shoe Fix in Cart */
 .cart-img { width: 100px !important; height: 100px !important; object-fit: contain; background: var(--gray); border-radius: 12px; }

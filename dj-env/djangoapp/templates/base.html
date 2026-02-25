@@ -4,28 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}StepUp Shoes{% endblock %}</title>
+    <title>StepUp Shoes</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{% url 'product_list' %}" class="logo">STEP<span>UP</span></a>
+            <a href="/" class="logo">STEP<span>UP</span></a>
+            
             <ul class="nav-links">
-                <li><a href="{% url 'product_list' %}">Shop</a></li>
-                {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                        <li><a href="/admin/" class="admin-link">Admin Dashboard</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'cart_detail' %}">Cart</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                {% endif %}
-            </ul>
+    <li><a href="/">Shop</a></li>
+
+    {% if user.is_authenticated and user.is_staff %}
+        <li><a href="/admin/" class="admin-link">Admin Dashboard</a></li>
+    {% endif %}
+
+    <li><a href="/cart/">Cart</a></li>
+
+    {% if user.is_authenticated %}
+        <li class="user-greeting">Hi, <span>{{ user.username }}</span>!</li>
+        <li>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="nav-logout-btn">Logout</button>
+            </form>
+        </li>
+    {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+    {% endif %}
+</ul>
         </div>
     </nav>
-    <main class="content">{% block content %}{% endblock %}</main>
-    <footer class="footer"><p>&copy; 2026 StepUp Shoes. All Rights Reserved.</p></footer>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <h2 class="logo">STEP<span>UP</span></h2>
+            <p>Elevating the streetwear scene in Minglanilla, Cebu since 2026.</p>
+        </div>
+
+        <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="/">Shop</a></li>
+                <li><a href="{% url 'about' %}">Our Story</a></li>
+                <li><a href="{% url 'cart_detail' %}">Your Cart</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-social">
+            <h4>Connect</h4>
+            <div class="social-icons">
+                <a href="#">FB</a>
+                <a href="#">IG</a>
+                <a href="#">TW</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2026 StepUp Shoes. All Rights Reserved.</p>
+    </div>
+</footer>
 </body>
 </html>

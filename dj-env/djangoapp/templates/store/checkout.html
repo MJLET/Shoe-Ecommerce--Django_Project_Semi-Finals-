@@ -1,45 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Checkout - StepUp Shoes{% endblock %}
-
 {% block content %}
 <div class="checkout-container">
     <div class="checkout-grid">
-        <div class="shipping-section">
-            <h2>Shipping Information</h2>
-            <form method="POST">
+        
+        <div class="checkout-form-section">
+            <h1 class="checkout-title">Shipping Information</h1>
+            <form action="{% url 'checkout' %}" method="POST" class="stepup-form">
                 {% csrf_token %}
-                <div class="input-group">
+                
+                <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" name="full_name" required placeholder="John Doe">
+                    <input type="text" name="name" placeholder="John Doe" required>
                 </div>
-                <div class="input-group">
+
+                <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" name="email" required placeholder="john@example.com">
+                    <input type="email" name="email" placeholder="john@example.com" required>
                 </div>
-                <div class="input-group">
+
+                <div class="form-group">
                     <label>Delivery Address</label>
-                    <textarea name="address" required placeholder="Street, City, Zip Code"></textarea>
+                    <textarea name="address" rows="3" placeholder="Street, City, Zip Code" required></textarea>
                 </div>
+
                 <button type="submit" class="place-order-btn">Place Order & Pay</button>
             </form>
         </div>
 
-        <div class="summary-section">
-            <h2>Order Summary</h2>
+        <div class="checkout-summary-section">
             <div class="summary-card">
-                {% for id, item in cart.items %}
-                <div class="summary-item">
-                    <span>{{ item.quantity }}x {{ item.name }} ({{ item.color }})</span>
-                    <span>${% widthratio item.price 1 item.quantity %}</span>
+                <h2 class="summary-title">Order Summary</h2>
+                <div class="summary-items">
+                    {% for v_id, item in cart.items %}
+                    <div class="summary-item">
+                        <span class="item-qty">{{ item.quantity }}x</span>
+                        <div class="item-details">
+                            <p class="item-name">{{ item.name }}</p>
+                            <p class="item-variant">{{ item.color }}</p>
+                        </div>
+                        <span class="item-price">${{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-                <hr>
-                <div class="total-row">
-                    <strong>Total Amount</strong>
-                    <strong>${{ total_price }}</strong>
+
+                <div class="summary-footer">
+                    <div class="total-row">
+                        <span>Total Amount</span>
+                        <span class="final-price">${{ total_price }}</span>
+                    </div>
                 </div>
             </div>
         </div>
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loader-content">
+        <div class="spinner"></div>
+        <p>Processing your StepUp order...</p>
+        <span>Please do not refresh the page.</span>
+    </div>
+</div>
+
+<script>
+    // Trigger the animation when the form is submitted
+    document.querySelector('.stepup-form').addEventListener('submit', function() {
+        document.getElementById('loading-overlay').classList.add('active');
+    });
+</script>
     </div>
 </div>
 {% endblock %}

@@ -2,28 +2,28 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Helvetica', sans-serif; color: #1a1a1a; }
-        .header { text-align: center; border-bottom: 2px solid #2196f3; padding-bottom: 20px; }
+        body { font-family: sans-serif; padding: 40px; }
+        .header { border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
         .logo { font-size: 24px; font-weight: bold; }
-        .blue { color: #2196f3; }
-        .details { margin: 30px 0; }
+        .logo span { color: #2196f3; }
+        .details { margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f5f5f7; padding: 10px; text-align: left; }
+        th { text-align: left; border-bottom: 1px solid #ddd; padding: 10px; }
         td { padding: 10px; border-bottom: 1px solid #eee; }
-        .total { text-align: right; font-size: 20px; margin-top: 20px; }
+        .total { text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">STEP<span class="blue">UP</span> SHOES</div>
-        <p>Official Purchase Receipt</p>
+        <div class="logo">STEP<span>UP</span> SHOES</div>
+        <p>Order #{{ order.id }} | Date: {{ order.created_at|date:"M d, Y" }}</p>
     </div>
 
     <div class="details">
-        <p><strong>Customer:</strong> {{ order.full_name }}</p>
-        <p><strong>Email:</strong> {{ order.email }}</p>
-        <p><strong>Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
-        <p><strong>Order ID:</strong> #{{ order.id }}</p>
+        <strong>Billed To:</strong><br>
+        {{ order.full_name }}<br>
+        {{ order.email }}<br>
+        {{ order.address }}
     </div>
 
     <table>
@@ -37,7 +37,7 @@
         <tbody>
             {% for item in order.items.all %}
             <tr>
-                <td>{{ item.product_variant.product.name }} ({{ item.product_variant.color_name }})</td>
+                <td>{{ item.product_name }} ({{ item.color }})</td>
                 <td>{{ item.quantity }}</td>
                 <td>${{ item.price }}</td>
             </tr>
@@ -45,8 +45,6 @@
         </tbody>
     </table>
 
-    <div class="total">
-        <strong>Total Paid: ${{ order.total_paid }}</strong>
-    </div>
+    <div class="total">Total: ${{ order.total_price }}</div>
 </body>
 </html>
