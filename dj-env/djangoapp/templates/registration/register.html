@@ -1,24 +1,16 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div style="max-width: 400px; margin: 80px auto; padding: 40px; background: #f5f5f7; border-radius: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-    <h2 style="font-weight: 800; font-size: 2rem; margin-bottom: 20px;">Join STEPUP</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        <div style="margin-bottom: 15px; text-align: left;">
-            {{ form.as_p }}
-        </div>
-        <button type="submit" style="background: #1a1a1a; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;">
+<div class="su-auth-container">
+    <h2 class="su-auth-title">STEP<span>UP</span> Registration</h2>  
+    <form method="post" class="su-auth-form">
+        {% csrf_token %}     
+        {{ form.as_p }}      
+        <button type="submit" class="su-auth-btn">
             Create Account
         </button>
     </form>
-    
-    <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px;">
-        <p style="font-size: 0.95rem; color: #666;">
-            Already have an account? 
-            <a href="{% url 'login' %}" style="color: #2196f3; text-decoration: none; font-weight: 700;">Sign in here</a>
-        </p>
+    <div class="su-auth-footer">
+        Already have an account? <a href="{% url 'login' %}">Sign in here</a>
     </div>
 </div>
 {% endblock %}

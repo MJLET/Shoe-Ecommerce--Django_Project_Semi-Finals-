@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="success-card">
+    
+    <div class="success-check">
+        ✓
+    </div>
+
+    <h1 style="font-weight: 900; font-size: 2.4rem; letter-spacing: -1.5px; margin-bottom: 10px;">MESSAGE SENT!</h1>
+    
+    <p style="color: #666; font-size: 1.1rem; margin-bottom: 35px; line-height: 1.6;">
+        Thanks for reaching out to <b>StepUp</b>. We've received your message and our team will get back to you shortly.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        <a href="/" class="add-to-cart-btn" style="text-decoration: none; display: block;">
+            Back to Shop
+        </a>
+        <a href="{% url 'contact' %}" style="color: #666; text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-top: 10px;">
+            Send another message
+        </a>
+    </div>
+</div>
+{% endblock %}

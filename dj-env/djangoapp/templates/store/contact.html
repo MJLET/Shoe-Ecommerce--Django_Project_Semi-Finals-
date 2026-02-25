@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="su-auth-container" style="max-width: 700px;"> <h1 class="su-auth-title">Contact STEP<span>UP</span></h1>
+    
+    <p style="text-align: center; color: #666; margin-bottom: 40px;">
+        Have a question about a restock or your order? We're here to help.
+    </p>
+
+    <form method="POST" class="su-auth-form">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+        </div>
+        
+        <input type="text" name="subject" placeholder="Subject" style="margin-bottom: 15px;">
+        
+        <textarea name="message" placeholder="How can we help you?" rows="5" required style="resize: none; margin-bottom: 20px;"></textarea>
+        
+        <button type="submit" class="su-auth-btn">
+            Send Message
+        </button>
+    </form>
+</div>
+{% endblock %}

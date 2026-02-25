@@ -129,3 +129,13 @@ def download_receipt(request, order_id):
 
 def about(request):
     return render(request, 'store/about.html')
+
+def contact(request):
+    if request.method == "POST":
+        # In a real app, you'd save this data or send an email here.
+        # For your project, we'll just redirect to the success screen.
+        return redirect('contact_success')
+    return render(request, 'store/contact.html')
+
+def contact_success(request):
+    return render(request, 'store/contact_success.html')

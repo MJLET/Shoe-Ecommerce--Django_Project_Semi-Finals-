@@ -16,4 +16,6 @@ urlpatterns = [
     path('download-receipt/<int:order_id>/', views.download_receipt, name='download_receipt'),
     path('logout/', views.custom_logout, name='logout'),
     path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
+    path('contact/success/', views.contact_success, name='contact_success'),
 ]
