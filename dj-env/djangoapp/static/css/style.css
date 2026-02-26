@@ -82,6 +82,55 @@ body {
 }
 .nav-logout-btn:hover { color: #ff4d4d; }
 
+/* --- 🗝️ FINAL CART IMAGE & NOTIFICATION FIX --- */
+
+.cart-link-wrapper {
+    position: relative; /* Essential for the pill to float */
+    display: inline-flex;
+    align-items: center;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+/* --- 🗝️ ABSOLUTE FIX FOR GIANT CART & PILL --- */
+
+/* 1. Shrink the Giant Image */
+.cart-image-icon {
+    width: 28px !important;  
+    height: 28px !important; 
+    object-fit: contain !important;
+    display: inline-block !important;
+}
+
+/* 2. Position the Link Container */
+.cart-link-wrapper {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    padding: 5px !important;
+}
+
+/* 3. The App-Style Pill */
+.cart-notification-pill {
+    position: absolute !important;
+    top: -5px !important;      /* Moves it to the top corner */
+    right: -10px !important;   /* Moves it to the right corner */
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 4px !important;
+    border-radius: 10px !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid white !important; /* Essential white border */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    z-index: 100 !important;
+}
 /* --- 3. SHOP PAGE GRID (Original Design) --- */
 .product-grid { 
     display: grid; 
@@ -100,16 +149,16 @@ body {
 .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
 
 .product-image-wrapper { 
-    height: 220px; background: var(--gray); border-radius: 20px; 
+    height: 220px; background: var(--gray); border-radius: 20px;    
     display: flex; align-items: center; justify-content: center; 
-    position: relative; margin-bottom: 15px; 
+    position: relative; margin-bottom: 25px; 
 }
 
-.product-image { max-width: 170px !important; max-height: 170px !important; object-fit: contain !important; }
+.product-image { max-width: 260px !important; max-height: 190px !important; object-fit: contain !important; border-radius: 20px; }
 
 .view-btn {
     text-decoration: none; font-size: 1rem; font-weight: 800; text-transform: uppercase; 
-    letter-spacing: 1px; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%) translateY(20px);
+    letter-spacing: 1px; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%) translateY(20px);
     opacity: 0; transition: all 0.3s ease; color: var(--accent-blue) !important;
 }
 .product-card:hover .view-btn { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -117,6 +166,7 @@ body {
 /* --- 4. PRODUCT DETAIL (Original Design) --- */
 .detail-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: center; }
+.description { text-align: justify ;}
 .main-image-card { background: var(--gray); border-radius: 30px; padding: 50px; display: flex; justify-content: center; align-items: center; min-height: 550px; }
 .main-image-card img { max-width: 85%; max-height: 450px; object-fit: contain; }
 
@@ -308,37 +358,50 @@ body {
 .footer-links a { color: #888; text-decoration: none; transition: 0.3s; }
 .footer-links a:hover { color: var(--accent-blue); }
 
-.social-icons { display: flex; gap: 15px; }
+/* --- 🗝️ FOOTER SOCIAL IMAGE FIX --- */
 
-.social-icons a {
+/* --- 🗝️ UNIFIED SOCIAL ICON SIZING --- */
 
-    color: rgb(14, 17, 17);
+/* --- 🗝️ UNIFIED SOCIAL ICON SIZING FIX --- */
 
-    background: #73e6e6;
-
-    width: 40px;
-
-    height: 40px;
-
+.social-icons {
     display: flex;
-
+    gap: 20px;
     align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    text-decoration: none;
-
-    font-weight: 800;
-
-    font-size: 0.8rem;
-
-    transition: 0.3s;
-
 }
 
-.social-icons a:hover { background: #2196f3; transform: translateY(-3px); }
+.social-icons a {
+    width: 50px !important;  /* Your preferred size */
+    height: 50px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    transition: 0.3s ease; /* Keeps your hover smooth */
+}
+
+.social-icons img {
+    width: 100% !important; 
+    height: 100% !important;
+    object-fit: contain !important;
+}
+
+/* 🗝️ THE FB SCALE FIX: Manually enlarge just the FB content */
+.social-icons a[href*="facebook"] img {
+    transform: scale(1.25); /* Increase this number if it's still too small */
+}
+
+/* Keeps your favorite hover effects */
+.social-icons a:hover {
+    transform: translateY(-5px);
+    filter: brightness(1.2); /* Subtle glow effect */
+}
+.footer-fb img {
+    width: 77px !important;  /* Manually increase this until it looks right */
+    height: 77px !important; /* Manually increase this until it looks right */
+    max-width: none !important; /* Allows it to exceed the 50px container if needed */
+    object-fit: contain !important;
+}
 
 .footer-bottom { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #333; color: #555; font-size: 0.85rem; }
 

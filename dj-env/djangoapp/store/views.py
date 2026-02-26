@@ -139,3 +139,9 @@ def contact(request):
 
 def contact_success(request):
     return render(request, 'store/contact_success.html')
+
+def cart_view(request):
+    # Your cart logic goes here (fetching items from session or DB)
+    return render(request, 'store/cart.html')
+
+

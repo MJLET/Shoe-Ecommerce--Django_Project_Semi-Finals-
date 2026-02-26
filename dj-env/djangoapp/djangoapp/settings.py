@@ -61,10 +61,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media', # <--- ADD THIS for shoe images
+                'django.template.context_processors.media',  # <--- ADD THIS for shoe images
+                'store.context_processors.cart_count',
             ],
         },
     },

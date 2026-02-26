@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StepUp Shoes</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
@@ -13,12 +14,23 @@
             <a href="/" class="logo">STEP<span>UP</span></a>
             
             <ul class="nav-links">
-                <li><a href="/">Shop</a></li>
                 {% if user.is_authenticated and user.is_staff %}
                     <li><a href="/admin/" class="admin-link">Admin Dashboard</a></li>
                 {% endif %}
 
-                <li><a href="/cart/">Cart</a></li>
+                <li><a href="/">Shop</a></li>
+
+                {% if request.resolver_match.url_name != 'login' %}
+<li>
+    <a href="{% url 'cart' %}" class="cart-link-wrapper">
+        <img src="{% static 'images/cart-icon.png' %}" alt="Cart" class="cart-image-icon">
+        
+        {% if cart_total_items > 0 %}
+            <span class="cart-notification-pill">{{ cart_total_items }}</span>
+        {% endif %}
+    </a>
+</li>
+                {% endif %}
 
                 {% if user.is_authenticated %}
                     <li class="user-greeting">Hi, <span>{{ user.username }}</span>!</li>
@@ -45,7 +57,6 @@
 
     <script>
         let mybutton = document.getElementById("backToTopBtn");
-
         window.onscroll = function() {scrollFunction()};
 
         function scrollFunction() {
@@ -65,7 +76,7 @@
     <div class="footer-container">
         <div class="footer-brand">
             <h2 class="logo">STEP<span>UP</span></h2>
-            <p>Elevating the streetwear scene in Minglanilla, Cebu since 2026.</p>
+            <p>Elevating the streetwear scene in Cebu City, Philippines since 2026.</p>
         </div>
 
         <div class="footer-links">
@@ -78,13 +89,19 @@
         </div>
 
         <div class="footer-social">
-            <h4>Connect</h4>
-            <div class="social-icons">
-                <a href="#">FB</a>
-                <a href="#">IG</a>
-                <a href="#">TW</a>
-            </div>
-        </div>
+    <h4>Connect</h4>
+    <div class="social-icons">
+        <a href="#" target="_blank" class="footer-fb">
+            <img src="{% static 'images/fb-icon.png' %}" alt="Facebook">
+        </a>
+        <a href="#" target="_blank">
+            <img src="{% static 'images/ig-icon.png' %}" alt="Instagram">
+        </a>
+        <a href="#" target="_blank">
+            <img src="{% static 'images/x-icon.png' %}" alt="Twitter">
+        </a>
+    </div>
+</div>>
     </div>
     
     <div class="footer-bottom">
