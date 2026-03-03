@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{% static 'images/hero-bg.jpg' %}');">
+    <div class="hero-content">
+        <h1 class="hero-title">Step <span>Up</span> Your <span>Game</span></h1>
+        <p class="hero-subtitle">Premium streetwear and performance kicks.</p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'product_list' %}" class="hero-btn">Shop the Collection</a>
+        {% else %}
+            <a href="{% url 'login' %}?next={% url 'product_list' %}" class="hero-btn">Shop the Collection</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="featured-section">
+    <h2 class="section-title">Fresh <span>Drops</span></h2>
+    <div class="product-grid">
+        {% for product in featured_products %}
+            <div class="product-card">
+                {% if product.is_limited_edition %}
+                    <span class="badge-limited">Limited Edition</span>
+                {% endif %}
+
+                {% with variant=product.variants.first %}
+                    <div class="brand-image">
+                        {% if variant and variant.image %}
+                            <img src="{{ variant.image.url }}" alt="{{ product.brand.name }}">
+                        {% endif %}
+                        <div class="brand-overlay">
+                            <a href="{% url 'product_detail' product.id %}" class="view-btn">View Kicks</a>
+                        </div>
+                    </div>
+                {% endwith %}
+                
+                <div class="brand-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="brand-name">{{ product.brand.name }}</p>
+                    <p class="price">₱{{ product.base_price }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{% url 'product_list' %}" class="hero-btn" style="background: var(--accent-blue);">See All Products</a>
+    </div>
+</section>
+
+<section class="featured-brands">
+    <h2 class="section-title">Top Tier Brands</h2>
+    <div class="popbrand-grid">
+        <div class="popbrand-card">
+            <img src="{% static 'images/jordan-logo.png' %}" alt="Jordans" class="popbrand_image">
+            <h3>Jordans</h3>
+        </div>
+        <div class="popbrand-card">
+            <img src="{% static 'images/nb-logo.png' %}" alt="New Balance" class="popbrand_image">
+            <h3>New Balance</h3>
+        </div>
+        <div class="popbrand-card">
+            <img src="{% static 'images/vans-logo.jpg' %}" alt="Vans" class="popbrand_image">
+            <h3>Vans</h3>
+        </div>
+    </div>
+</section>
+{% endblock %}

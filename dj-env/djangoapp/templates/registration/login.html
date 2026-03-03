@@ -1,20 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="su-auth-container">
-    
+<div class="su-auth-container">   
     <h2 class="su-auth-title">Login to STEP<span>UP</span></h2>
     
-    <form method="post" class="su-auth-form">
-        {% csrf_token %}
+    {% if messages and not error_field and not remaining %}
+        {% for message in messages %}
+            <div class="su-error-box">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}   
+
+    <form method="post" class="su-auth-form" id="loginForm">
+        {% csrf_token %}       
         
-        {{ form.as_p }}
+        <div class="su-form-fields">
+            <p>
+                <label for="id_username">Username:</label>
+                <input type="text" name="username" id="id_username" required>
+            </p>
+            
+            <p>
+                <label for="id_password">Password:</label>
+                <input type="password" name="password" id="id_password" 
+                       class="{% if error_field == 'password' or remaining %}su-input-error{% endif %}" required>
+                
+                {% if remaining %}
+                    <span class="su-field-error-text">
+                        Account locked. Please wait <span id="timer">{{ remaining }}</span>s.
+                    </span>
+                {% elif error_field == 'password' %}
+                    <span class="su-field-error-text">{{ error_message }}</span>
+                {% endif %}
+            </p>
+        </div>
         
         <button type="submit" class="su-auth-btn">
             Sign In
         </button>
-    </form>
-    
+    </form>   
+
     <div class="su-auth-footer">
         <p>
             Don't have an account? 
@@ -22,4 +48,51 @@
         </p>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // --- 🗝️ YOUR ORIGINAL SHOW/HIDE LOGIC ---
+        const passwordField = document.querySelector('input[type="password"]');
+        
+        if (passwordField) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'su-password-wrapper';
+            passwordField.parentNode.insertBefore(wrapper, passwordField);
+            wrapper.appendChild(passwordField);
+
+            const toggleBtn = document.createElement('span');
+            toggleBtn.className = 'su-toggle-text';
+            toggleBtn.id = 'toggleBtn';
+            toggleBtn.innerText = 'Show';
+            wrapper.appendChild(toggleBtn);
+
+            toggleBtn.addEventListener('click', function() {
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    toggleBtn.innerText = "Hide";
+                } else {
+                    passwordField.type = "password";
+                    toggleBtn.innerText = "Show";
+                }
+            });
+        }
+
+        // --- 🗝️ NEW REAL-TIME COUNTDOWN LOGIC ---
+        const timerSpan = document.getElementById('timer');
+        if (timerSpan) {
+            let seconds = parseInt(timerSpan.innerText);
+            
+            const countdown = setInterval(() => {
+                seconds--;
+                timerSpan.innerText = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    // Automatically refresh to allow login again
+                    window.location.reload(); 
+                }
+            }, 1000);
+        }
+    });
+</script>
 {% endblock %}

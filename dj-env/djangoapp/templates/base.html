@@ -9,16 +9,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+<div id="welcome-popup-container"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const cameFromLogin = document.referrer.includes('/login/');
+        const isUserLoggedIn = "{{ user.is_authenticated }}" === "True";
+        const username = "{{ user.username }}";
+
+        if (cameFromLogin && isUserLoggedIn) {
+            console.log("Welcome to StepUp, " + username + "!");
+
+            const container = document.getElementById('welcome-popup-container');
+            container.innerHTML = `
+                <div class="welcome-popup show">
+                    <div class="popup-icon">👟</div>
+                    <div class="popup-text">Welcome back, ${username}!</div>
+                </div>`;
+
+            const popup = container.querySelector('.welcome-popup');
+            setTimeout(() => {
+                popup.style.opacity = '0';
+                popup.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => popup.remove(), 600);
+            }, 3000);
+        }
+    });
+</script>
+
+
     <nav class="navbar">
         <div class="nav-container">
-            <a href="/" class="logo">STEP<span>UP</span></a>
-            
+            <a href="/" class="logo">STEP<span>UP</span></a>          
             <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
                 {% if user.is_authenticated and user.is_staff %}
                     <li><a href="/admin/" class="admin-link">Admin Dashboard</a></li>
                 {% endif %}
 
-                <li><a href="/">Shop</a></li>
+                <li><a href="{% url 'product_list' %}">Shop</a></li>
 
                 {% if request.resolver_match.url_name != 'login' %}
 <li>
@@ -101,9 +130,8 @@
             <img src="{% static 'images/x-icon.png' %}" alt="Twitter">
         </a>
     </div>
-</div>>
-    </div>
-    
+</div>
+    </div>  
     <div class="footer-bottom">
         <p>&copy; 2026 StepUp Shoes. All Rights Reserved.</p>
     </div>

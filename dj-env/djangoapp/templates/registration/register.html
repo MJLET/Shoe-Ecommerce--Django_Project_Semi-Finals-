@@ -1,16 +1,86 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="su-auth-container">
-    <h2 class="su-auth-title">STEP<span>UP</span> Registration</h2>  
-    <form method="post" class="su-auth-form">
-        {% csrf_token %}     
-        {{ form.as_p }}      
-        <button type="submit" class="su-auth-btn">
-            Create Account
-        </button>
-    </form>
-    <div class="su-auth-footer">
-        Already have an account? <a href="{% url 'login' %}">Sign in here</a>
+
+<div id="suRegModal" class="su-reg-modal-overlay">
+    <div class="su-reg-modal-box">
+        <div id="suRegHeader" style="padding: 25px; color: white;">
+            <h3 id="suRegTitle" style="margin:0;"></h3>
+        </div>
+        <div style="padding: 30px;">
+            <p id="suRegMessage" style="color: var(--black); font-weight: 600;"></p>
+            <button onclick="closeRegModal()" class="su-auth-btn" style="margin-top:10px;">Got it</button>
+        </div>
     </div>
 </div>
+
+<div class="su-auth-container">
+    <h2 class="su-auth-title">STEP<span>UP</span> Registration</h2>
+
+    <form method="post" class="su-auth-form" id="registerForm">
+        {% csrf_token %}
+        <div class="su-form-fields">
+            {% for field in form %}
+                <p>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    
+                    <input type="{{ field.field.widget.input_type }}" 
+                           name="{{ field.name }}" 
+                           id="{{ field.id_for_label }}"
+                           class="{% if field.errors %}su-reg-input-fail{% endif %}"
+                           value="{{ field.value|default:'' }}">
+                    
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <span class="su-reg-error-msg">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                        <small class="su-reg-help-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+        <button type="submit" class="su-auth-btn">Create Account</button>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // --- 🗝️ 1. PASSWORD TOGGLE LOGIC FOR REGISTRATION ---
+        // Find all password-type inputs (Password & Confirmation)
+        const passwordFields = document.querySelectorAll('input[type="password"]');
+        
+        passwordFields.forEach((field, index) => {
+            // Create a unique wrapper for each field
+            const wrapper = document.createElement('div');
+            wrapper.className = 'su-reg-password-wrapper';
+            
+            // Insert wrapper and move the field inside it
+            field.parentNode.insertBefore(wrapper, field);
+            wrapper.appendChild(field);
+
+            // Create the 'Show' toggle button
+            const toggleBtn = document.createElement('span');
+            toggleBtn.className = 'su-reg-toggle-text';
+            toggleBtn.innerText = 'Show';
+            wrapper.appendChild(toggleBtn);
+
+            // Click event to swap between 'password' and 'text'
+            toggleBtn.addEventListener('click', function() {
+                if (field.type === "password") {
+                    field.type = "text";
+                    toggleBtn.innerText = "Hide";
+                } else {
+                    field.type = "password";
+                    toggleBtn.innerText = "Show";
+                }
+            });
+        });
+
+        // --- 🗝️ 2. EXISTING MODAL LOGIC (KEEP AS IS) ---
+        {% if registration_error %}
+            openRegModal("Registration Error", "Check the red fields for missing requirements.", false);
+        {% endif %}
+    });
+</script>
 {% endblock %}

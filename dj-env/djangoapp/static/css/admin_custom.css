@@ -1,0 +1,60 @@
+/* ==========================================
+   🗝️ STEPUP REFINED ADMIN THEME 
+   ========================================== */
+
+/* 1. RESTORE ORIGINAL TEAL HEADER */
+#header, .breadcrumbs {
+    background: #417690 !important; /* Original Django teal */
+    border-bottom: 3px solid #2196f3 !important; /* StepUp Blue accent */
+    color: rgb(204, 244, 255) !important; /* Original yellow-white text */
+}
+
+#header a:link, #header a:visited {
+    color: #fff !important;
+}
+
+/* 2. FIX MODULE HEADERS (Blue background for white text) */
+.module h2, .caption, .module th, .selector-chosen h2 {
+    color: white !important;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+/* 3. PREMIUM BUTTON STYLING */
+.button, input[type=submit], .submit-row input, .addlink {
+    border: none !important;
+    border-radius: 3px !important; /* Slightly more rounded for modern look */
+    font-weight: 700 !important;
+    transition: 0.3s ease;
+}
+
+.button:hover, input[type=submit]:hover {
+    background: #0d8aee !important;
+    transform: translateY(-1px);
+}
+
+/* 4. TABLE HEADERS */
+#content-main th {
+    background: #f5f5f7 !important;
+    color: #1a1a1a !important;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 5. SIDE NAV POLISH */
+#nav-sidebar {
+    border-right: 1px solid #ddd !important;
+    background: #fff !important;
+}
+
+.module tr th {
+    color: #666 !important; /* Subtle secondary text */
+}
+
+.addlink {
+    color: #000000 !important; /* Pure Black */
+    font-weight: 700 !important;
+    padding-left: 18px !important;
+    background-position: 0 1px !important;
+}
+
+

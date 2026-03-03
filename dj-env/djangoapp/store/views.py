@@ -1,35 +1,107 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.contrib import messages
+from django.utils import timezone
 from xhtml2pdf import pisa
+import datetime
+
 from .models import Product, ProductVariant, Order, OrderItem
 from django.contrib.auth.forms import UserCreationForm
 
-# --- AUTHENTICATION ---
+# --- 1. AUTHENTICATION & SECURITY ---
+# store/views.py
+
+# store/views.py
+
+# store/views.py
+
 def register(request):
+    registration_error = False
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # 🗝️ Add a specific success message for the Home page popup
+            messages.success(request, f"Registration successful! Welcome to StepUp, {user.username}.")
             login(request, user)
-            return redirect('product_list')
+            
+            # 🗝️ CHANGE: Redirect to 'home' instead of 'product_list'
+            return redirect('home') 
+        else:
+            registration_error = True
     else:
         form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+        
+    return render(request, 'registration/register.html', {
+        'form': form, 
+        'registration_error': registration_error
+    })
+# --- 1. AUTHENTICATION & SECURITY ---
+
+def login_view(request):
+    # ... existing session check ...
+    last_attempt = request.session.get('last_attempt_time')
+    
+    # 🗝️ CHANGE: Lock after 3 attempts, shorten wait to 30s
+    if request.session.get('login_attempts', 0) >= 3 and last_attempt:
+        last_time = datetime.datetime.fromisoformat(last_attempt)
+        wait_time = (timezone.now() - last_time).total_seconds()
+        
+        if wait_time < 30: # 🗝️ Changed from 60 to 30
+            remaining = int(30 - wait_time)
+            # 🗝️ Pass 'remaining' as a variable so JavaScript can see it
+            return render(request, 'registration/login.html', {'remaining': remaining})
+        else:
+            request.session['login_attempts'] = 0
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            request.session['login_attempts'] = 0
+            login(request, user)
+            return redirect('product_list')
+        else:
+            request.session['login_attempts'] += 1
+            request.session['last_attempt_time'] = timezone.now().isoformat()
+            attempts_left = 3 - request.session['login_attempts']
+            
+            # 🗝️ ISSUE FIX: Identify the error and the field it belongs to
+            error_msg = ""
+            if attempts_left > 0:
+                error_msg = f"Invalid login. {attempts_left} left."
+            else:
+                error_msg = "Account locked for 60s."
+            
+            # 🗝️ Pass 'error_field' so the template knows to highlight the password box
+            return render(request, 'registration/login.html', {
+                'error_message': error_msg,
+                'error_field': 'password'
+            })
+
+    return render(request, 'registration/login.html')
 
 def custom_logout(request):
     logout(request)
     return redirect('login')
 
-@login_required
-def login_success_redirect(request):
-    if request.user.is_staff:
-        return redirect('/admin/')
-    return redirect('product_list')
+# store/views.py
 
-# --- SHOP DISPLAY ---
+def home(request):
+    # 🗝️ Fetch the latest 3 products to show on the Home page
+    featured_products = Product.objects.all().prefetch_related('variants')[:3]
+    
+    return render(request, 'store/home.html', {
+        'featured_products': featured_products
+    })
+
+# --- 2. SHOP DISPLAY ---
+
 @login_required
 def product_list(request):
     products = Product.objects.all().prefetch_related('variants')
@@ -39,11 +111,17 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'store/product_detail.html', {'product': product})
 
-# --- SHOPPING CART ---
+# --- 3. SHOPPING CART ---
+
+# --- 3. SHOPPING CART (Fixed Redirects & Clear Cart) ---
+
+# --- 3. SHOPPING CART (Fixed Redirects & Clear Cart) ---
+
 def add_to_cart(request, variant_id):
     variant = get_object_or_404(ProductVariant, id=variant_id)
     cart = request.session.get('cart', {})
     v_id = str(variant_id)
+    
     cart[v_id] = {
         'name': variant.product.name,
         'color': variant.color_name,
@@ -52,14 +130,16 @@ def add_to_cart(request, variant_id):
         'quantity': cart.get(v_id, {}).get('quantity', 0) + 1
     }
     request.session['cart'] = cart
-    return redirect('cart_detail')
+    # 🗝️ FIX: Redirect to 'cart', not 'cart_detail'
+    return redirect('cart')
 
 def cart_detail(request):
     cart = request.session.get('cart', {})
-    total_price = 0
+    total_price = sum(float(item['price']) * int(item['quantity']) for item in cart.values())
+    
     for item in cart.values():
         item['subtotal'] = float(item['price']) * int(item['quantity'])
-        total_price += item['subtotal']
+        
     return render(request, 'store/cart.html', {'cart': cart, 'total_price': total_price})
 
 def update_cart(request, variant_id, action):
@@ -71,7 +151,8 @@ def update_cart(request, variant_id, action):
         elif action == 'decrease' and cart[v_id]['quantity'] > 1:
             cart[v_id]['quantity'] -= 1
         request.session['cart'] = cart
-    return redirect('cart_detail')
+    # 🗝️ FIX: Redirect to 'cart'
+    return redirect('cart')
 
 def remove_from_cart(request, variant_id):
     cart = request.session.get('cart', {})
@@ -79,26 +160,30 @@ def remove_from_cart(request, variant_id):
     if v_id in cart:
         del cart[v_id]
         request.session['cart'] = cart
-    return redirect('cart_detail')
+    # 🗝️ FIX: Redirect to 'cart'
+    return redirect('cart')
 
-# --- CHECKOUT & SUCCESS ---
+# 🗝️ NEW FEATURE: Clear the entire bag
+def clear_cart(request):
+    request.session['cart'] = {}
+    return redirect('cart')
+# --- 4. CHECKOUT & ORDERS ---
+
 @login_required
 def checkout(request):
     cart = request.session.get('cart', {})
     if not cart:
         return redirect('product_list')
     
-    # 🗝️ Calculate total directly to prevent KeyError
     total_price = sum(float(item['price']) * int(item['quantity']) for item in cart.values())
     
     if request.method == 'POST':
-        # 🗝️ This logic creates the Order record in the database
         order = Order.objects.create(
             user=request.user,
             full_name=request.POST.get('name'), 
             address=request.POST.get('address'),
             email=request.POST.get('email'),
-            total_price=total_price # Fixes TypeError
+            total_price=total_price
         )
 
         for v_id, item_data in cart.items():
@@ -127,21 +212,16 @@ def download_receipt(request, order_id):
     pisa.CreatePDF(html, dest=response)
     return response
 
+# --- 5. STATIC PAGES ---
+
 def about(request):
     return render(request, 'store/about.html')
 
 def contact(request):
     if request.method == "POST":
-        # In a real app, you'd save this data or send an email here.
-        # For your project, we'll just redirect to the success screen.
+        messages.success(request, "Your message has been sent. We'll get back to you soon!")
         return redirect('contact_success')
     return render(request, 'store/contact.html')
 
 def contact_success(request):
     return render(request, 'store/contact_success.html')
-
-def cart_view(request):
-    # Your cart logic goes here (fetching items from session or DB)
-    return render(request, 'store/cart.html')
-
-

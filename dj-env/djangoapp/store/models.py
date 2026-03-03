@@ -11,6 +11,7 @@ class Product(models.Model):
     description = models.TextField()
     base_price = models.DecimalField(max_digits=10, decimal_places=2)
     def __str__(self): return self.name
+    is_limited_edition = models.BooleanField(default=False)
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name='variants', on_delete=models.CASCADE)
