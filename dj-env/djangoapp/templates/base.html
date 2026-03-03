@@ -37,7 +37,6 @@
     });
 </script>
 
-
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="logo">STEP<span>UP</span></a>          
@@ -49,16 +48,15 @@
 
                 <li><a href="{% url 'product_list' %}">Shop</a></li>
 
-                {% if request.resolver_match.url_name != 'login' %}
-<li>
-    <a href="{% url 'cart' %}" class="cart-link-wrapper">
-        <img src="{% static 'images/cart-icon.png' %}" alt="Cart" class="cart-image-icon">
-        
-        {% if cart_total_items > 0 %}
-            <span class="cart-notification-pill">{{ cart_total_items }}</span>
-        {% endif %}
-    </a>
-</li>
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'cart' %}" class="cart-link-wrapper">
+                        <img src="{% static 'images/cart-icon.png' %}" alt="Cart" class="cart-image-icon">
+                        {% if cart_total_items > 0 %}
+                            <span class="cart-notification-pill">{{ cart_total_items }}</span>
+                        {% endif %}
+                    </a>
+                </li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
@@ -111,26 +109,26 @@
         <div class="footer-links">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="/">Shop</a></li>
+                <li><a href="{% url 'product_list' %}">Shop</a></li>
                 <li><a href="{% url 'about' %}">Our Story</a></li>
                 <li><a href="{% url 'contact' %}">Contact Us</a></li>
             </ul>
         </div>
 
         <div class="footer-social">
-    <h4>Connect</h4>
-    <div class="social-icons">
-        <a href="#" target="_blank" class="footer-fb">
-            <img src="{% static 'images/fb-icon.png' %}" alt="Facebook">
-        </a>
-        <a href="#" target="_blank">
-            <img src="{% static 'images/ig-icon.png' %}" alt="Instagram">
-        </a>
-        <a href="#" target="_blank">
-            <img src="{% static 'images/x-icon.png' %}" alt="Twitter">
-        </a>
-    </div>
-</div>
+            <h4>Connect</h4>
+            <div class="social-icons">
+                <a href="#" target="_blank" class="footer-fb">
+                    <img src="{% static 'images/fb-icon.png' %}" alt="Facebook">
+                </a>
+                <a href="#" target="_blank">
+                    <img src="{% static 'images/ig-icon.png' %}" alt="Instagram">
+                </a>
+                <a href="#" target="_blank">
+                    <img src="{% static 'images/x-icon.png' %}" alt="Twitter">
+                </a>
+            </div>
+        </div>
     </div>  
     <div class="footer-bottom">
         <p>&copy; 2026 StepUp Shoes. All Rights Reserved.</p>

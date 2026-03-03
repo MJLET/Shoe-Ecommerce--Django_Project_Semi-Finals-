@@ -30,7 +30,11 @@
                             <img src="{{ variant.image.url }}" alt="{{ product.brand.name }}">
                         {% endif %}
                         <div class="brand-overlay">
+                             {% if user.is_authenticated %}
                             <a href="{% url 'product_detail' product.id %}" class="view-btn">View Kicks</a>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={% url 'product_detail' product.id %}" class="view-btn">View Kicks</a>
+                            {% endif %}
                         </div>
                     </div>
                 {% endwith %}
